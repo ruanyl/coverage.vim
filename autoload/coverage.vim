@@ -33,6 +33,7 @@ function! coverage#get_coverage_lines(file_name) abort
       let current_file_json = get(json, a:file_name)
       let lines_map = get(current_file_json, 'l')
       let lines = filter(keys(lines_map), 'v:val != "0" && get(lines_map, v:val) != 0')
+      let lines = map(lines, 'str2nr(v:val)')
     endif
   catch
     echoerr v:exception
