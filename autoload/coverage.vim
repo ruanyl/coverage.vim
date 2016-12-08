@@ -1,3 +1,6 @@
+let s:last_modified = 0
+let s:json_file_content = []
+
 function! coverage#start() abort
   if exists('s:timer')
     timer_stop(s:timer)
@@ -27,8 +30,17 @@ function! coverage#get_coverage_lines(file_name) abort
     "echoerr '"' . coverage_json_full_path . '" is not found'
     return lines
   endif
+
+  let current_last_modified = getftime(coverage_json_full_path)
+
+  " Only read file when file has changed
+  if current_last_modified > s:last_modified
+    let s:json_file_content = readfile(coverage_json_full_path)
+    let s:last_modified = current_last_modified
+  endif
+
   try
-    let json = json_decode(join(readfile(coverage_json_full_path)))
+    let json = json_decode(join(s:json_file_content))
     if has_key(json, a:file_name)
       let current_file_json = get(json, a:file_name)
 
