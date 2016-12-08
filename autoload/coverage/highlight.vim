@@ -25,6 +25,7 @@ endfunction
 function! coverage#highlight#define_signs() abort
   sign define CoverageCovered
   sign define CoverageUncovered
+  sign define CoverageDummy
 
   call coverage#highlight#define_sign_text()
   call coverage#highlight#define_sign_text_highlights()
