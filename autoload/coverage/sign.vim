@@ -6,7 +6,7 @@ function! coverage#sign#clear_signs() abort
   call coverage#sign#find_current_signs()
 
   let sign_ids = map(values(getbufvar(bufnr, 'coverage_signs')), 'v:val.id')
-  call coverage#sign#remove_signs(sign_ids, 1)
+  call coverage#sign#remove_signs(sign_ids)
   call setbufvar(bufnr, 'coverage_signs', {})
 endfunction
 
@@ -18,7 +18,7 @@ function! coverage#sign#update_signs(modified_lines) abort
   let old_coverage_signs = map(values(getbufvar(bufnr, 'coverage_signs')), 'v:val.id')
   let other_signs         = getbufvar(bufnr, 'coverage_other_signs')
 
-  call coverage#sign#remove_signs(old_coverage_signs, 1)
+  call coverage#sign#remove_signs(old_coverage_signs)
 
   for line_number in a:modified_lines
     if index(other_signs, line_number) == -1  " don't clobber others' signs
@@ -70,15 +70,10 @@ function! coverage#sign#find_current_signs() abort
   call setbufvar(bufnr, 'coverage_other_signs', other_signs)
 endfunction
 
-function! coverage#sign#remove_signs(sign_ids, all_signs) abort
-  let bufnr = coverage#utility#bufnr()
-  if a:all_signs && empty(getbufvar(bufnr, 'coverage_other_signs'))
-    execute "sign unplace * buffer=" . bufnr
-  else
-    for id in a:sign_ids
-      execute "sign unplace" id
-    endfor
-  endif
+function! coverage#sign#remove_signs(sign_ids) abort
+  for id in a:sign_ids
+    execute "sign unplace" id
+  endfor
 endfunction
 
 function! coverage#sign#next_sign_id() abort
