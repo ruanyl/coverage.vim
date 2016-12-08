@@ -31,13 +31,36 @@ function! coverage#get_coverage_lines(file_name) abort
     let json = json_decode(join(readfile(coverage_json_full_path)))
     if has_key(json, a:file_name)
       let current_file_json = get(json, a:file_name)
-      let lines_map = get(current_file_json, 'l')
-      let lines = filter(keys(lines_map), 'v:val != "0" && get(lines_map, v:val) != 0')
-      let lines = map(lines, 'str2nr(v:val)')
+
+      if has_key(current_file_json, 'l')
+        let lines_map = get(current_file_json, 'l')
+        let lines = filter(keys(lines_map), 'v:val != "0" && get(lines_map, v:val) != 0')
+        let lines = map(lines, 'str2nr(v:val)')
+      else
+        let lines = coverage#calc_line_from_statementsMap(current_file_json)
+        let lines = map(lines, 'str2nr(v:val)')
+      endif
     endif
   catch
     echoerr v:exception
   endtry
+  return lines
+endfunction
+
+function! coverage#calc_line_from_statementsMap(json) abort
+  let statementMap = get(a:json, 'statementMap')
+  let statements = get(a:json, 's')
+  let lines = []
+  for key in keys(statements)
+    let line = statementMap[key].start.line
+    let line_count = statements[key]
+    if line_count == 0 && get(statementMap[key], 'skip')
+      let line_count = 1
+    endif
+    if index(lines, line) == -1
+      call add(lines, line)
+    endif
+  endfor
   return lines
 endfunction
 
