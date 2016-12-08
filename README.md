@@ -1,6 +1,6 @@
 # Coverage.vim
 
-Inspired by [vim-gitgutter](https://github.com/airblade/vim-gitgutter)
+Greatly inspired by [vim-gitgutter](https://github.com/airblade/vim-gitgutter)
 
 A vim plugin which shows code coverage like [wallabyjs](https://wallabyjs.com/)
 
@@ -34,3 +34,5 @@ Define the interval time of updating the coverage lines
 ```
 let g:coverage_interval = 5000
 ```
+
+### MIT License
