@@ -15,6 +15,12 @@ A vim plugin which shows code coverage like [wallabyjs](https://wallabyjs.com/)
 Plug 'ruanyl/coverage.vim'
 ```
 
+### How it works
+
+This plugin uses vim8 new feature `timer_start()` to read the `<coverage-*>.json` in an interval. Whenver it changed, it updates the signs of current buffer.
+
+The plugin awares of signs from other plugins, for example: `syntastic`, `ale` ... But it will overwrite the signs of `gitgutter`.
+
 ### Config
 
 Specify the path to `coverage.json` file relative to your current working directory.
