@@ -17,7 +17,7 @@ Plug 'ruanyl/coverage.vim'
 
 ### How it works
 
-This plugin uses vim8 new feature `timer_start()` to read the `<coverage-*>.json` in an interval. Whenver it changed, it updates the signs of current buffer.
+This plugin uses vim8 new feature `timer_start()` to read the `<coverage-*>.json` in an interval. Whenver the file changed, it will update the signs of current buffer.
 
 The plugin awares of signs from other plugins, for example: `syntastic`, `ale` ... But it will overwrite the signs of `gitgutter`.
 
@@ -42,5 +42,7 @@ Define the interval time of updating the coverage lines
 ```
 let g:coverage_interval = 5000
 ```
+
+> If you found the project helpful, please give it a star :)
 
 ### MIT License
