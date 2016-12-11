@@ -3,7 +3,7 @@ let s:json_file_content = []
 
 function! coverage#start() abort
   if exists('s:timer')
-    timer_stop(s:timer)
+    call timer_stop(s:timer)
   endif
   let s:timer = timer_start(g:coverage_interval, 'coverage#process_buffer', {'repeat': -1})
 endfunction
