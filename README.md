@@ -43,6 +43,18 @@ Define the interval time of updating the coverage lines
 let g:coverage_interval = 5000
 ```
 
+Do not display signs on covered lines
+
+```
+let g:coverage_show_covered = 0
+```
+
+Display signs on uncovered lines
+
+```
+let g:coverage_show_uncovered = 1
+```
+
 > If you found the project helpful, please give it a star :)
 
 ### MIT License

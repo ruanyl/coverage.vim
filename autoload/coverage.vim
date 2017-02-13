@@ -16,15 +16,19 @@ function! coverage#process_buffer(...) abort
     let file = expand('#' . l:bufnr . ':p')
     let modified_lines = coverage#get_coverage_lines(file)
 
-    if g:coverage_signs
-      call coverage#sign#update_signs(modified_lines)
+    if g:coverage_show_covered
+      call coverage#sign#update_signs(get(modified_lines, 'covered', []), 'covered')
+    endif
+    if g:coverage_show_uncovered
+      call coverage#sign#update_signs(get(modified_lines, 'uncovered', []), 'uncovered')
     endif
   endif
 endfunction
 
 function! coverage#get_coverage_lines(file_name) abort
   let coverage_json_full_path = coverage#find_coverage_json()
-  let lines = []
+  let lines = {}
+  let lines_map = {}
 
   if !filereadable(coverage_json_full_path)
     "echoerr '"' . coverage_json_full_path . '" is not found'
@@ -46,17 +50,27 @@ function! coverage#get_coverage_lines(file_name) abort
 
       if has_key(current_file_json, 'l')
         let lines_map = get(current_file_json, 'l')
-        let lines = filter(keys(lines_map), 'v:val != "0" && get(lines_map, v:val) != "0"')
-        let lines = map(lines, 'str2nr(v:val)')
       else
         let lines_map = coverage#calc_line_from_statementsMap(current_file_json)
-        let lines = filter(keys(lines_map), 'v:val != "0" && get(lines_map, v:val) != "0"')
-        let lines = map(lines, 'str2nr(v:val)')
       endif
+      let lines['covered'] = coverage#get_covered_lines(lines_map)
+      let lines['uncovered'] = coverage#get_uncovered_lines(lines_map)
     endif
   catch
     echoerr v:exception
   endtry
+  return lines
+endfunction
+
+function! coverage#get_covered_lines(lines_map) abort
+  let lines = filter(keys(a:lines_map), 'v:val != "0" && get(a:lines_map, v:val) != "0"')
+  let lines = map(lines, 'str2nr(v:val)')
+  return lines
+endfunction
+
+function! coverage#get_uncovered_lines(lines_map) abort
+  let lines = filter(keys(a:lines_map), 'v:val != "0" && get(a:lines_map, v:val) == "0"')
+  let lines = map(lines, 'str2nr(v:val)')
   return lines
 endfunction
 

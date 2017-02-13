@@ -12,29 +12,37 @@ function! coverage#sign#clear_signs() abort
 endfunction
 
 " modified_lines: list of [<line_number (number),...]
-function! coverage#sign#update_signs(modified_lines) abort
+" type: 'covered' or 'uncovered'
+function! coverage#sign#update_signs(modified_lines, type) abort
   call coverage#sign#find_current_signs()
 
   let bufnr = coverage#utility#bufnr()
-  let old_coverage_signs = map(values(getbufvar(bufnr, 'coverage_signs')), 'v:val.id')
+  let old_covered_signs = map(filter(values(getbufvar(bufnr, 'coverage_signs')), 'v:val.name == "CoverageCovered"'), 'v:val.id')
+  let old_uncovered_signs = map(filter(values(getbufvar(bufnr, 'coverage_signs')), 'v:val.name == "CoverageUncovered"'), 'v:val.id')
   let other_signs         = getbufvar(bufnr, 'coverage_other_signs')
 
-  if !empty(old_coverage_signs)
+  if !empty(old_covered_signs) || !empty(old_uncovered_signs)
     call coverage#sign#add_dummy_sign()
   endif
 
   " TODO: should not remove all signs at one time
-  call coverage#sign#remove_signs(old_coverage_signs)
+  let name = ''
+  if a:type == 'covered'
+    let name = 'CoverageCovered'
+    call coverage#sign#remove_signs(old_covered_signs)
+  elseif a:type == 'uncovered'
+    let name = 'CoverageUncovered'
+    call coverage#sign#remove_signs(old_uncovered_signs)
+  endif
 
   for line_number in a:modified_lines
     if index(other_signs, line_number) == -1  " don't clobber others' signs
-      let name = 'CoverageCovered'
       let id = coverage#sign#next_sign_id()
       execute "sign place" id "line=" . line_number "name=" . name "buffer=" . bufnr
     endif
   endfor
 
-  if !empty(old_coverage_signs)
+  if !empty(old_covered_signs) || !empty(old_uncovered_signs)
     call coverage#sign#remove_dummy_sign(0)
   endif
 
