@@ -4,7 +4,7 @@ Greatly inspired by [vim-gitgutter](https://github.com/airblade/vim-gitgutter)
 
 A vim plugin which shows code coverage like [wallabyjs](https://wallabyjs.com/)
 
-> requires vim8
+> requires vim8 or neovim
 
 ![coverage](https://cloud.githubusercontent.com/assets/486382/21000678/e4dc204a-bd24-11e6-9847-a4568511c1f3.png)
 
