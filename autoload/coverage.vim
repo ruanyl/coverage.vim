@@ -32,7 +32,7 @@ function! coverage#get_coverage_lines(file_name) abort
 
   for path in coverage_json_full_pathes
     if !filereadable(path)
-      echoerr '"' . path . '" is not found'
+      " echoerr '"' . path . '" is not found'
       continue
     endif
 
