@@ -31,6 +31,14 @@ Specify the path to `coverage.json` file relative to your current working direct
 let g:coverage_json_report_path = 'coverage/coverage.json'
 ```
 
+Or if you have multiple files (from backend and frontend for example).
+
+Entries are summed up (but conflicts can emerge if the same files are analyzed)
+
+```
+let g:coverage_json_report_pathes = ['coverage/coverage-final.json', 'coverage/Firefox YZ/coverage-final.json']
+```
+
 Define the symbol display for covered lines
 
 ```
@@ -53,6 +61,11 @@ Display signs on uncovered lines
 
 ```
 let g:coverage_show_uncovered = 1
+```
+
+To set the base path from which coverage\_json\_report\_path[es] are resolved
+```
+let g:coverage_json_project_path = '/my/absolute/path'
 ```
 
 > If you found the project helpful, please give it a star :)

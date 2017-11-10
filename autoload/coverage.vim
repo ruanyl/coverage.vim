@@ -1,5 +1,5 @@
-let s:last_modified = 0
-let s:json_file_content = []
+let s:last_modified = {} 
+let s:json_file_content = {} 
 
 function! coverage#start() abort
   if exists('s:timer')
@@ -26,39 +26,41 @@ function! coverage#process_buffer(...) abort
 endfunction
 
 function! coverage#get_coverage_lines(file_name) abort
-  let coverage_json_full_path = coverage#find_coverage_json()
+  let coverage_json_full_pathes = coverage#find_coverage_json()
   let lines = {}
   let lines_map = {}
 
-  if !filereadable(coverage_json_full_path)
-    "echoerr '"' . coverage_json_full_path . '" is not found'
-    return lines
-  endif
-
-  let current_last_modified = getftime(coverage_json_full_path)
-
-  " Only read file when file has changed
-  if current_last_modified > s:last_modified
-    let s:json_file_content = readfile(coverage_json_full_path)
-    let s:last_modified = current_last_modified
-  endif
-
-  try
-    let json = json_decode(join(s:json_file_content))
-    if has_key(json, a:file_name)
-      let current_file_json = get(json, a:file_name)
-
-      if has_key(current_file_json, 'l')
-        let lines_map = get(current_file_json, 'l')
-      else
-        let lines_map = coverage#calc_line_from_statementsMap(current_file_json)
-      endif
-      let lines['covered'] = coverage#get_covered_lines(lines_map)
-      let lines['uncovered'] = coverage#get_uncovered_lines(lines_map)
+  for path in coverage_json_full_pathes
+    if !filereadable(path)
+      echoerr '"' . path . '" is not found'
+      continue
     endif
-  catch
-    echoerr v:exception
-  endtry
+
+    let current_last_modified = getftime(path)
+
+    " Only read file when file has changed
+    if current_last_modified > get(s:last_modified, path)
+      let s:json_file_content[path] = readfile(path)
+      let s:last_modified[path] = current_last_modified
+    endif
+
+    try
+      let json = json_decode(join(get(s:json_file_content, path)))
+      if has_key(json, a:file_name)
+        let current_file_json = get(json, a:file_name)
+
+        if has_key(current_file_json, 'l')
+          let lines_map = extend(lines_map, get(current_file_json, 'l'))
+        else
+          let lines_map = extend(lines_map, coverage#calc_line_from_statementsMap(current_file_json))
+        endif
+      endif
+    catch
+      echoerr v:exception
+    endtry
+  endfor
+  let lines['covered'] = coverage#get_covered_lines(lines_map)
+  let lines['uncovered'] = coverage#get_uncovered_lines(lines_map)
   return lines
 endfunction
 
@@ -96,7 +98,20 @@ function! coverage#calc_line_from_statementsMap(json) abort
 endfunction
 
 function! coverage#find_coverage_json() abort
-  let cwd = fnamemodify('.', ':p')
-  let json_path = cwd . g:coverage_json_report_path
-  return json_path
+  if !exists('g:coverage_json_project_path')
+    let cwd = fnamemodify('.', ':p')
+  else
+    let cwd = fnamemodify(g:coverage_json_project_path, ':p')
+  endif
+  let json_pathes = []
+  if exists('g:coverage_json_report_pathes')
+    for currpath in g:coverage_json_report_pathes
+      let json_path = simplify(cwd . '/' . currpath)
+      call add(json_pathes, json_path)
+    endfor
+  elseif exists('g:coverage_json_report_path')
+    let json_path = simplify(cwd . '/' . g:coverage_json_report_path)
+    call add(json_pathes, json_path)
+  endif
+  return json_pathes
 endfunction
