@@ -25,7 +25,7 @@ The plugin awares of signs from other plugins, for example: `syntastic`, `ale` .
 
 Specify the path to `coverage.json` file relative to your current working directory.
 
-> Currently it supports [istanbul](https://github.com/gotwarlost/istanbul) `json reporter` nicely, and should also support `istanbul` based tools like [nyc](https://github.com/istanbuljs/nyc) and [karma-coverage](https://github.com/karma-runner/karma-coverage)
+> Currently it supports [istanbul](https://github.com/gotwarlost/istanbul) `json reporter` nicely, and should also support `istanbul` based tools like [nyc](https://github.com/istanbuljs/nyc) and [karma-coverage](https://github.com/karma-runner/karma-coverage), [jest](https://github.com/facebook/jest) is also tested to be working
 
 ```
 let g:coverage_json_report_path = 'coverage/coverage.json'
