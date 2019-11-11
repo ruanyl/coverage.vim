@@ -27,33 +27,20 @@ The plugin awares of signs from other plugins, for example: `syntastic`, `ale` .
 
 ### Config
 
-Specify the path to `coverage.json` file relative to your current working directory.
-
-```
+```vim
+" Specify the path to `coverage.json` file relative to your current working directory.
 let g:coverage_json_report_path = 'coverage/coverage.json'
-```
 
-Define the symbol display for covered lines
-
-```
+" Define the symbol display for covered lines
 let g:coverage_sign_covered = '⦿'
-```
 
-Define the interval time of updating the coverage lines
-
-```
+" Define the interval time of updating the coverage lines
 let g:coverage_interval = 5000
-```
 
-Do not display signs on covered lines
-
-```
+" Do not display signs on covered lines
 let g:coverage_show_covered = 0
-```
 
-Display signs on uncovered lines
-
-```
+" Display signs on uncovered lines
 let g:coverage_show_uncovered = 1
 ```
 
