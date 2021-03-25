@@ -1,5 +1,7 @@
 # Coverage.vim
 
+For [coc.nvim](https://github.com/neoclide/coc.nvim) users, please take a look at [coc-coverage](https://github.com/ruanyl/coc-coverage)
+
 Greatly inspired by [vim-gitgutter](https://github.com/airblade/vim-gitgutter)
 
 A vim plugin which shows code coverage like [wallabyjs](https://wallabyjs.com/). Supports istanbul `json reporter` format:
